@@ -1,5 +1,4 @@
-html
-<!DOCTYPE html>
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -176,19 +175,19 @@ html
     <script>
         const IG_URL = "https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr";
 
-        // IMPORTANTE: Pon tu API KEY de Google AI Studio aquí para que funcione en Vercel
+        // API KEY Integrada correctamente
         const apiKey = "AIzaSyCuChdS3bBwvRt4r7lVcJyWNPWJD-9CK5A"; 
 
         const productos = [
             { id: 1, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Botella 1 Litro', img: 'natural-1lt.jpg.png', basePrice: 85, options: ['Individual 1 Lt', 'Paquete 2x1 Lt'], prices: [85, 155] },
             { id: 2, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Bebible 250ml', img: 'natural-250ml.jpg.jpg', basePrice: 28 },
-            { id: 3, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Edición Espesa 1 Lt', img: 'natural-espesa-1lt.jpg.jpg', basePrice: 95 },
+            { id: 3, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Edición Espesa 1 Litro', img: 'natural-espesa-1lt.jpg.jpg', basePrice: 95 },
             { id: 4, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Botella 1 Litro', img: 'fresa-1lt.jpg.png', basePrice: 89, options: ['Individual 1 Lt', 'Paquete 2x1 Lt'], prices: [89, 160] },
             { id: 5, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Bebible 250ml', img: 'fresa-250ml.jpg.jpg', basePrice: 30 },
-            { id: 6, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Edición Espesa 1 Lt', img: 'fresa-espesa-1lt.jpg.jpg', basePrice: 99 },
+            { id: 6, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Edición Espesa 1 Litro', img: 'fresa-espesa-1lt.jpg.jpg', basePrice: 99 },
             { id: 7, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Botella 1 Litro', img: 'durazno-1lt.jpg.png', basePrice: 89 },
             { id: 8, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Bebible 250ml', img: 'durazno-250ml.jpg.png', basePrice: 30 },
-            { id: 9, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Edición Espesa 1 Lt', img: 'durazno-espesa-1lt.jpg.jpg', basePrice: 99 },
+            { id: 9, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Edición Espesa 1 Litro', img: 'durazno-espesa-1lt.jpg.jpg', basePrice: 99 },
             { id: 10, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Espesa Individual 150g', img: 'durazno-espesa-150g.jpg.jpg', basePrice: 34 }
         ];
 
@@ -269,13 +268,12 @@ html
             container.appendChild(loading);
 
             try {
-                if (!apiKey) throw new Error("Clave faltante");
-
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                // Llamada a la API de Gemini
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Eres el experto nutricional de Eternal. Tu especialidad es el yogur premium para personas de 50+ años. Responde siempre en español, con elegancia y brevedad. Pregunta: ${query}` }] }]
+                        contents: [{ parts: [{ text: `Eres el experto nutricional de la marca de yogur premium Eternal. Tu especialidad es la salud de personas mayores de 50 años. Responde de forma amable, profesional y breve en español. Pregunta: ${query}` }] }]
                     })
                 });
 
@@ -291,7 +289,7 @@ html
                 loading.remove();
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'text-red-500 text-[10px] p-2 bg-red-50';
-                errorMsg.innerText = "Nota: Para activar el chat, añade tu API KEY de Google en el código.";
+                errorMsg.innerText = "Error al conectar con el asesor. Por favor intenta más tarde.";
                 container.appendChild(errorMsg);
             }
             container.scrollTop = container.scrollHeight;

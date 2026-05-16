@@ -248,43 +248,92 @@
             { id:10, sabor:'durazno',  nombre:'Yogur Durazno',  tipo:'Espesa Individual 150g',    img:'durazno-espesa-150g.jpg.jpg',  basePrice:34 }
         ];
 
+        const saborConfig = {
+            natural:  { bg: '#F5F0E8', accent: '#8B7355', emoji: '🥛', label: 'Natural' },
+            fresa:    { bg: '#FDF0F3', accent: '#C4607A', emoji: '🍓', label: 'Fresa' },
+            durazno:  { bg: '#FEF4E8', accent: '#C47A30', emoji: '🍑', label: 'Durazno' }
+        };
+
         function renderProducts(filter = 'all') {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             const filtered = filter === 'all' ? productos : productos.filter(p => p.sabor === filter);
+
             filtered.forEach(p => {
+                const cfg = saborConfig[p.sabor] || saborConfig.natural;
                 const card = document.createElement('div');
-                card.className = 'group bg-white p-6 border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center relative flex flex-col justify-between h-full';
+                card.className = 'group flex flex-col overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl';
+                card.style.background = '#fff';
+                card.style.borderRadius = '2px';
 
                 let optionsHtml = '';
                 if (p.options) {
-                    optionsHtml = `<div class="flex justify-center gap-2 mb-4">`;
+                    optionsHtml = `<div class="flex gap-2 mb-3">`;
                     p.options.forEach((opt, idx) => {
-                        optionsHtml += `<button onclick="updatePrice(this, ${p.prices[idx]})" class="text-[9px] border px-2 py-1 uppercase tracking-tighter ${idx === 0 ? 'border-[#C9A84C] text-[#C9A84C]' : 'text-gray-400'}">${opt}</button>`;
+                        optionsHtml += `<button onclick="updatePrice(this, ${p.prices[idx]})"
+                            class="text-[9px] border px-3 py-1 uppercase tracking-wider transition-all ${idx === 0 ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]' : 'border-gray-300 text-gray-400 hover:border-[#C9A84C] hover:text-[#C9A84C]'}">${opt}</button>`;
                     });
                     optionsHtml += `</div>`;
                 }
 
                 card.innerHTML = `
-                    <div>
-                        <div class="aspect-square bg-white mb-6 overflow-hidden flex items-center justify-center p-4">
-                            <img src="${p.img}" alt="${p.nombre}" class="max-h-full object-contain group-hover:scale-105 transition duration-700">
+                    <!-- Zona imagen con fondo de sabor -->
+                    <div class="relative overflow-hidden" style="background:${cfg.bg}; height: 260px;">
+                        <!-- Badge sabor -->
+                        <div class="absolute top-4 left-4 z-10 flex items-center gap-1 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest"
+                             style="background: rgba(255,255,255,0.85); color:${cfg.accent}; backdrop-filter: blur(4px);">
+                            <span>${cfg.emoji}</span>
+                            <span>${cfg.label}</span>
                         </div>
-                        <span class="text-[10px] uppercase tracking-[0.2em] text-[#C9A84C] font-bold mb-2 block">${p.sabor}</span>
-                        <h3 class="text-2xl mb-1">${p.nombre}</h3>
-                        <p class="text-gray-400 text-[10px] mb-4 uppercase tracking-widest">${p.tipo}</p>
-                        <div class="text-xl font-light mb-6">$<span class="price-val">${p.basePrice}</span> MXN</div>
-                        ${optionsHtml}
+                        <!-- Precio flotante -->
+                        <div class="absolute top-4 right-4 z-10 text-right">
+                            <span class="block text-xs font-bold" style="color:${cfg.accent}">desde</span>
+                            <span class="block text-2xl font-light leading-none" style="font-family:'Cormorant Garamond',serif; color:#1A1A1A">
+                                $<span class="price-val">${p.basePrice}</span>
+                            </span>
+                            <span class="block text-[9px] uppercase tracking-widest text-gray-400">MXN</span>
+                        </div>
+                        <!-- Imagen -->
+                        <div class="h-full flex items-center justify-center p-6">
+                            <img src="${p.img}" alt="${p.nombre}"
+                                 class="h-full object-contain group-hover:scale-110 transition-transform duration-700 drop-shadow-lg">
+                        </div>
+                        <!-- Línea decorativa inferior -->
+                        <div class="absolute bottom-0 left-0 right-0 h-0.5" style="background: linear-gradient(to right, transparent, ${cfg.accent}, transparent);"></div>
                     </div>
-                    <div class="grid grid-cols-2 gap-2 mt-4">
-                        <a href="${IG_URL}" target="_blank"
-                           class="bg-[#1A1A1A] text-white py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#C9A84C] transition flex items-center justify-center">
-                            <i class="fab fa-instagram mr-2"></i> Pedir
-                        </a>
-                        <button onclick="generateRecipe('${p.nombre}')"
-                                class="border border-[#1A1A1A] text-[#1A1A1A] py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#1A1A1A] hover:text-white transition">
-                            <i class="fas fa-utensils mr-2"></i> Receta
-                        </button>
+
+                    <!-- Zona info -->
+                    <div class="flex flex-col flex-1 p-5">
+                        <h3 class="text-xl mb-1 leading-tight" style="font-family:'Cormorant Garamond',serif">${p.nombre}</h3>
+                        <p class="text-[10px] uppercase tracking-[0.18em] mb-3" style="color:${cfg.accent}">${p.tipo}</p>
+
+                        ${optionsHtml}
+
+                        <!-- Beneficios rápidos -->
+                        <div class="flex gap-3 mb-4 mt-auto pt-3 border-t border-gray-100">
+                            <span class="text-[9px] uppercase tracking-widest text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle" style="color:${cfg.accent}"></i> Sin azúcar
+                            </span>
+                            <span class="text-[9px] uppercase tracking-widest text-gray-400 flex items-center gap-1">
+                                <i class="fas fa-check-circle" style="color:${cfg.accent}"></i> Colágeno
+                            </span>
+                        </div>
+
+                        <!-- Botones -->
+                        <div class="grid grid-cols-2 gap-2">
+                            <a href="${IG_URL}" target="_blank"
+                               class="flex items-center justify-center gap-2 py-3 text-[9px] uppercase font-bold tracking-widest text-white transition-all duration-300 hover:opacity-80"
+                               style="background:#1A1A1A">
+                                <i class="fab fa-instagram"></i> Pedir
+                            </a>
+                            <button onclick="generateRecipe('${p.nombre}')"
+                                    class="flex items-center justify-center gap-2 py-3 text-[9px] uppercase font-bold tracking-widest transition-all duration-300 hover:text-white"
+                                    style="border: 1px solid #1A1A1A; color:#1A1A1A;"
+                                    onmouseover="this.style.background='#1A1A1A'; this.style.color='#fff';"
+                                    onmouseout="this.style.background='transparent'; this.style.color='#1A1A1A';">
+                                <i class="fas fa-utensils"></i> Receta
+                            </button>
+                        </div>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -308,19 +357,213 @@
             document.getElementById('aiChatContainer').classList.toggle('hidden', !chatVisible);
         }
 
-        /* ── IA con Google Gemini ── */
-        const GEMINI_KEY = 'AIzaSyCuChdS3bBwvRt4r7lVcJyWNPWJD-9CK5A';
-        const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_KEY}`;
+        /* ══════════════════════════════════════════════
+           BANCO DE CONOCIMIENTO ETERNAL — 60+ entradas
+           Cada entrada tiene: palabras clave y respuesta
+        ══════════════════════════════════════════════ */
+        const bancoPreguntasRespuestas = [
 
-        const SYSTEM_PROMPT = `Eres el experto nutricional de la marca de yogur premium Eternal, especializado en la salud de personas mayores de 50 años. 
-Responde de forma amable, profesional y concisa en español. 
-Si te preguntan sobre recetas, sugiere formas saludables y creativas de incorporar el yogur Eternal en la dieta. 
-Tus respuestas no deben exceder 3 párrafos cortos. 
-No saludes de nuevo si ya lo hiciste antes.`;
+            /* ─ COLÁGENO ─ */
+            { keys: ['colageno','colágeno','piel','elasticidad','arrugas','rejuvenecer'],
+              resp: 'El yogur Eternal contiene péptidos de colágeno hidrolizado, que el cuerpo absorbe con mayor facilidad que el colágeno normal. Su consumo diario contribuye a mejorar la elasticidad de la piel, reducir la flacidez y fortalecer uñas y cabello. Los resultados más notables se observan después de 4 a 6 semanas de consumo continuo.' },
 
-        const conversationHistory = [];
+            { keys: ['cuanto colageno','cantidad colageno','dosis colageno','gramos colageno'],
+              resp: 'Cada porción de Eternal aporta una dosis funcional de péptidos de colágeno diseñada para cubrir las necesidades diarias de una mujer mayor de 50 años. Para mejores resultados, recomendamos consumirlo por la mañana en ayunas o al desayuno, cuando la absorción intestinal es óptima.' },
 
-        async function askAI(customPrompt = null) {
+            { keys: ['colageno articulaciones','huesos','articulaciones','rodillas','dolor articular'],
+              resp: 'El colágeno en Eternal no solo beneficia la piel: también apoya la salud de cartílagos y articulaciones, lo cual es especialmente importante después de los 50 años. Consumirlo de forma regular puede contribuir a reducir la rigidez matutina y mejorar la movilidad.' },
+
+            /* ─ PROBIÓTICOS ─ */
+            { keys: ['probiotico','probiótico','bacteria','flora','intestinal','microbioma','digestión','digestion'],
+              resp: 'Eternal contiene cepas probióticas seleccionadas científicamente que refuerzan la microbiota intestinal. Esto se traduce en mejor digestión, menor inflamación abdominal y un sistema inmunológico más fuerte. Los probióticos son especialmente beneficiosos para mujeres mayores de 50 años, cuya flora intestinal tiende a deteriorarse.' },
+
+            { keys: ['estreñimiento','estreñido','evacuacion','ir al baño','regularidad'],
+              resp: 'Los probióticos de Eternal ayudan a regular el tránsito intestinal de forma natural. Muchas clientas reportan mejora en su regularidad digestiva dentro de los primeros 7 a 10 días de consumo. Te recomendamos acompañarlo con suficiente agua durante el día para potenciar el efecto.' },
+
+            { keys: ['gases','flatulencia','hinchazón','hinchado','abdomen','inflamacion'],
+              resp: 'La flora intestinal equilibrada que promueven los probióticos de Eternal ayuda a reducir la producción excesiva de gases y la sensación de hinchazón. Si eres nueva en el consumo de probióticos, es normal sentir un leve ajuste los primeros días; el malestar desaparece en poco tiempo.' },
+
+            /* ─ AZÚCAR Y DIABETES ─ */
+            { keys: ['azucar','azúcar','diabetes','diabetica','diabético','glucosa','glucemia'],
+              resp: 'Eternal no contiene azúcar añadida, lo que lo hace adecuado para personas con diabetes tipo 2 o quienes buscan controlar su glucemia. Sin embargo, si tienes diabetes, te recomendamos consultar con tu médico antes de incorporar cualquier alimento nuevo a tu dieta, aunque sea saludable.' },
+
+            { keys: ['endulzante','edulcorante','stevia','sin azucar añadida'],
+              resp: 'Eternal está formulado sin azúcares añadidos. Su dulzura natural proviene de la leche fermentada y, en los sabores de fruta, de los ingredientes naturales. No utilizamos edulcorantes artificiales que puedan alterar la microbiota o generar efectos secundarios.' },
+
+            { keys: ['calorias','calorías','engorda','subir de peso','bajo en calorias'],
+              resp: 'Eternal es bajo en calorías gracias a que no tiene azúcar añadida y usa leche seleccionada. Es una opción ideal si buscas mantener un peso saludable sin sacrificar nutrición. Su alto contenido de proteína también ayuda a sentirte satisfecha por más tiempo.' },
+
+            /* ─ PROTEÍNA ─ */
+            { keys: ['proteina','proteína','musculo','músculo','masa muscular','sarcopenia'],
+              resp: 'Eternal es una fuente de proteína de alta calidad proveniente de la leche. Esto es clave después de los 50 años, cuando el cuerpo pierde masa muscular más rápidamente (sarcopenia). Consumir proteína de calidad junto con actividad física moderada ayuda a mantener la fuerza y la vitalidad.' },
+
+            /* ─ SABORES ─ */
+            { keys: ['sabores','sabor','que sabores','cuales sabores','variedad'],
+              resp: 'Eternal está disponible en tres deliciosos sabores: Natural, Fresa y Durazno. Cada uno está disponible en presentación líquida bebible de 250ml, botella de 1 litro y versión espesa de 1 litro. El sabor natural es ideal para combinar con frutas, granola o miel; los sabores de fruta son perfectos para disfrutar solos.' },
+
+            { keys: ['natural','sin sabor','neutro','sin fruta'],
+              resp: 'El Yogur Natural Eternal tiene un sabor suave y ligeramente ácido, perfecto para quienes prefieren personalizar su experiencia. Puedes añadirle fruta fresca, granola, semillas de chía, miel de agave o canela. Es el más versátil de nuestra línea y el favorito para recetas de cocina saludable.' },
+
+            { keys: ['fresa','fresas','strawberry'],
+              resp: 'El Yogur de Fresa Eternal tiene un sabor frutal y suave, elaborado con extracto natural de fresa. No contiene colorantes artificiales. Es ideal para el desayuno o como snack de media mañana. También queda delicioso mezclado con avena o como base de un smoothie.' },
+
+            { keys: ['durazno','melocotón','melocoton','peach'],
+              resp: 'El Yogur de Durazno Eternal combina la cremosidad del yogur con el dulce suave del durazno natural. Es una de las opciones más populares entre nuestras clientas. Perfecto para acompañar con nueces o como postre ligero después de la comida.' },
+
+            /* ─ PRESENTACIONES Y PRECIOS ─ */
+            { keys: ['presentaciones','tamaños','tamanios','cuanto trae','envase','botella','bebible','espeso','espesa'],
+              resp: 'Eternal tiene tres presentaciones: Bebible 250ml (ideal para consumo individual rápido), Botella 1 Litro (para la familia o varios días) y Edición Espesa 1 Litro (textura más densa, perfecta para comer con cuchara). Todos los sabores están disponibles en estas presentaciones.' },
+
+            { keys: ['precio','precios','cuanto cuesta','cuánto cuesta','costo','cuanto vale'],
+              resp: 'Nuestros precios van desde $28 MXN la presentación bebible de 250ml hasta $99 MXN la edición espesa de 1 litro. Tenemos paquetes dobles en presentación de 1 litro con precio preferencial. Para pedidos y precios actualizados, escríbenos directamente por Instagram @eternalyugurt.' },
+
+            { keys: ['paquete','combo','descuento','oferta','mayoreo','por mayoreo'],
+              resp: 'Sí contamos con paquetes dobles en nuestras botellas de 1 litro con precio especial. Si te interesa hacer un pedido en cantidad mayor, contáctanos por Instagram @eternalyugurt para cotizarte un precio de mayoreo personalizado.' },
+
+            /* ─ PEDIDOS Y ENVÍOS ─ */
+            { keys: ['pedido','pedir','comprar','como compro','donde compro','adquirir'],
+              resp: 'Los pedidos se realizan directamente a través de nuestro Instagram oficial @eternalyugurt. Ahí recibirás atención personalizada, podrás confirmar disponibilidad y coordinar la entrega. ¡Solo escríbenos un mensaje directo y con gusto te atendemos!' },
+
+            { keys: ['envio','envío','entrega','domicilio','a domicilio','llegan','reparten','distribución'],
+              resp: 'Contamos con servicio de entrega a domicilio en Comitán de Domínguez y zonas cercanas. Para conocer los detalles de cobertura y costos de envío, contáctanos por Instagram @eternalyugurt donde te daremos toda la información actualizada.' },
+
+            { keys: ['tiempo entrega','cuanto tarda','cuando llega','días entrega'],
+              resp: 'Los tiempos de entrega varían según tu ubicación. En zona urbana de Comitán generalmente entregamos el mismo día o al día siguiente. Para zonas foráneas te informamos el tiempo exacto al momento de tu pedido. Escríbenos al Instagram @eternalyugurt.' },
+
+            { keys: ['pago','como pago','transferencia','efectivo','tarjeta','oxxo'],
+              resp: 'Aceptamos diferentes métodos de pago. Para conocer las opciones disponibles actualmente (efectivo, transferencia bancaria, etc.), te recomendamos preguntar directamente en nuestro Instagram @eternalyugurt al momento de hacer tu pedido.' },
+
+            /* ─ CONSUMO Y RECETAS ─ */
+            { keys: ['como consumir','como tomar','como comer','cuando tomar','cuando comer','como se toma'],
+              resp: 'Puedes consumir Eternal en cualquier momento del día, pero el desayuno es ideal porque maximiza la absorción del colágeno y los probióticos. La versión bebible es perfecta para llevarte, la espesa para comer con cuchara y disfrutar con más calma. Lo recomendamos a temperatura fría o ambiente.' },
+
+            { keys: ['receta','recetas','ideas','como preparar','desayuno','smoothie','licuado'],
+              resp: 'Hay muchas formas de disfrutar Eternal: prepara un tazón con yogur espeso, granola y frutas frescas; úsalo como base de un smoothie con plátano y avena; mézclalo con miel y semillas de chía para un desayuno completo; o úsalo en lugar de crema en recetas de cocina saludable. ¡La creatividad es el límite!' },
+
+            { keys: ['licuado','smoothie','batido'],
+              resp: 'El Yogur Bebible Eternal de Fresa o Durazno es perfecto como base de licuado. Prueba esta combinación: 250ml de Eternal Fresa + medio plátano + una cucharada de avena + hielo. Sin azúcar añadida y lleno de proteína, colágeno y probióticos. Perfecto para iniciar el día con energía.' },
+
+            { keys: ['granola','fruta','bowl','tazón','desayuno saludable'],
+              resp: 'Un bowl de Eternal Espeso con granola, fruta de temporada y un toque de miel de agave es uno de los desayunos más completos y saludables. Aporta proteína, probióticos, colágeno y fibra en una sola comida. Es el desayuno favorito de muchas de nuestras clientas.' },
+
+            { keys: ['noche','cena','antes dormir','nocturno'],
+              resp: 'También puedes consumir Eternal en la noche. El colágeno se sintetiza principalmente durante el sueño, así que tomar el yogur horas antes de dormir puede potenciar su efecto en piel y articulaciones. Elige la versión natural o cualquier sabor que prefieras.' },
+
+            /* ─ SALUD FEMENINA ─ */
+            { keys: ['menopausia','climaterio','cambios hormonales','sofocos','calores'],
+              resp: 'Los probióticos de Eternal pueden ayudar a aliviar algunos síntomas relacionados con los cambios hormonales de la menopausia, como la inflamación y los problemas digestivos. Además, el colágeno apoya la piel que tiende a perder firmeza durante esta etapa. Eternal está especialmente pensado para mujeres que atraviesan esta transición.' },
+
+            { keys: ['osteoporosis','calcio','huesos fuertes','densidad osea','densidad ósea'],
+              resp: 'El yogur Eternal, al ser un lácteo fermentado, es una fuente natural de calcio de alta biodisponibilidad. El colágeno que contiene también apoya la estructura ósea. Para mujeres mayores de 50 años en riesgo de osteoporosis, es un alimento complementario muy valioso dentro de una dieta equilibrada.' },
+
+            { keys: ['tiroides','hipotiroidismo','hormonas','hipotiroidea'],
+              resp: 'Eternal puede ser parte de una dieta saludable para personas con hipotiroidismo. Al no contener azúcares añadidos y ser un alimento fermentado, apoya la salud digestiva e intestinal que suele verse afectada en estas condiciones. Consulta siempre con tu médico sobre tu plan alimenticio.' },
+
+            /* ─ INTOLERANCIA Y ALERGIAS ─ */
+            { keys: ['lactosa','intolerante','intolerancia','lactosa','no tolero leche'],
+              resp: 'El proceso de fermentación del yogur Eternal descompone gran parte de la lactosa, lo que lo hace más tolerable que la leche regular para muchas personas con sensibilidad leve. Sin embargo, si tienes intolerancia severa diagnosticada, te recomendamos consultar con tu médico antes de consumirlo.' },
+
+            { keys: ['alergia','alergico','gluten','celiaco','celíaco'],
+              resp: 'Eternal no contiene gluten en su formulación base. Sin embargo, siempre recomendamos revisar el etiquetado del producto que recibas, ya que los procesos de manufactura pueden variar. Si tienes una alergia específica, escríbenos por Instagram para darte información detallada de ingredientes.' },
+
+            { keys: ['vegano','vegana','vegetariano','plant based','sin leche animal'],
+              resp: 'Eternal está elaborado con leche de vaca, por lo que no es una opción vegana. Es un producto 100% lacto-vegetariano. Si buscas alternativas vegetales, actualmente no contamos con esa línea, pero es algo que exploramos para el futuro.' },
+
+            /* ─ COMPARACIÓN CON OTROS YOGURES ─ */
+            { keys: ['diferencia','porque eternal','mejor que otros','que tiene de especial','comparado con','vs otros yogures'],
+              resp: 'A diferencia de los yogures comerciales comunes, Eternal fue diseñado específicamente para mujeres mayores de 50 años. Combina colágeno hidrolizado, probióticos seleccionados y cero azúcar añadida en una sola presentación. La mayoría de los yogures del supermercado contienen altas cantidades de azúcar y no tienen colágeno ni cepas probióticas funcionales.' },
+
+            { keys: ['yogur griego','griego'],
+              resp: 'La Edición Espesa de Eternal es similar en textura al yogur griego, pero con un valor nutricional superior: incluye colágeno hidrolizado y probióticos funcionales que el yogur griego convencional no tiene. Además, no contiene azúcar añadida. Es la opción ideal si ya eres fan del yogur griego.' },
+
+            /* ─ CONSERVACIÓN ─ */
+            { keys: ['conservar','guardar','refrigerar','caduca','caducidad','fecha vencimiento','frio','congelar'],
+              resp: 'Eternal debe conservarse en refrigeración entre 2°C y 8°C. Una vez abierto, consúmelo dentro de los 3 días siguientes. No se recomienda congelar el producto ya que afecta la viabilidad de los probióticos. Revisa siempre la fecha de caducidad impresa en el envase.' },
+
+            { keys: ['viaje','viajes','transportar','llevar','fuera de casa'],
+              resp: 'Para llevar tu Eternal fuera de casa, la presentación bebible de 250ml es la más práctica. Mantenla en una bolsa térmica con hielo para conservar la cadena de frío. El yogur puede estar a temperatura ambiente por un par de horas sin problema, pero lo ideal es mantenerlo frío.' },
+
+            /* ─ NIÑOS Y FAMILIA ─ */
+            { keys: ['niños','niñas','hijos','bebes','bebés','familia','toda la familia','jovenes'],
+              resp: 'Aunque Eternal fue formulado pensando en mujeres mayores de 50 años, el yogur puede ser consumido por personas de cualquier edad. El colágeno y los probióticos son beneficiosos para toda la familia. Para niños menores de 2 años, consulta con su pediatra antes de introducir cualquier yogur.' },
+
+            { keys: ['embarazo','embarazada','lactancia','amamantando'],
+              resp: 'Los yogures fermentados con probióticos en general son seguros durante el embarazo y la lactancia. Sin embargo, dado que Eternal contiene péptidos de colágeno y cepas específicas de probióticos, te recomendamos consultar con tu médico o ginecóloga antes de incorporarlo a tu dieta durante estas etapas.' },
+
+            /* ─ INGREDIENTES ─ */
+            { keys: ['ingredientes','componentes','que contiene','formulacion','formulación','que lleva'],
+              resp: 'Eternal está elaborado con leche entera de alta calidad, cultivos lácticos activos (probióticos), péptidos de colágeno hidrolizado y saborizantes naturales en los sabores de fruta. No contiene azúcares añadidos, colorantes artificiales ni conservadores innecesarios. Es un alimento limpio y funcional.' },
+
+            { keys: ['conservantes','conservador','artificial','quimico','químico','aditivos'],
+              resp: 'Eternal está formulado sin colorantes artificiales y sin conservadores innecesarios. Nuestra prioridad es ofrecerte un producto lo más limpio y natural posible, manteniendo la calidad y seguridad alimentaria que mereces.' },
+
+            /* ─ RESULTADOS Y TIEMPO ─ */
+            { keys: ['cuando ver resultados','cuanto tiempo','cuando noto','cuando siento','tiempo en hacer efecto'],
+              resp: 'Los resultados varían según cada persona. Los beneficios digestivos de los probióticos suelen notarse en 7 a 14 días. Los efectos del colágeno en piel, cabello y articulaciones generalmente se aprecian entre 4 y 8 semanas de consumo diario y constante. La clave es la regularidad.' },
+
+            { keys: ['todos los dias','diario','continuo','constante','rutina'],
+              resp: 'Sí, te recomendamos consumir Eternal todos los días para obtener los máximos beneficios. Los probióticos y el colágeno funcionan mejor con el consumo continuo. Una porción diaria es suficiente, aunque puedes consumir más si lo deseas dentro de una dieta equilibrada.' },
+
+            /* ─ MARCA Y EMPRESA ─ */
+            { keys: ['donde estan','ubicacion','ubicación','donde se fabrica','comitan','comitán','chiapas'],
+              resp: 'Eternal es una marca mexicana con presencia en Comitán de Domínguez, Chiapas. Estamos orgullosos de ser un producto local hecho con amor y compromiso por la salud de las mujeres de nuestra región y de todo México.' },
+
+            { keys: ['instagram','redes sociales','contacto','redes','sigueme','siguenos'],
+              resp: 'Nos encuentras en Instagram como @eternalyugurt. Ahí compartimos recetas, tips de nutrición, testimonios de clientas y las últimas novedades de la marca. ¡Síguenos y únete a la comunidad Eternal! También puedes escribirnos por mensaje directo para hacer tu pedido.' },
+
+            { keys: ['mision','vision','quienes son','historia','como nacio','fundadores','empresa'],
+              resp: 'Eternal nació de la convicción de que las mujeres mayores de 50 años merecen un alimento funcional de verdad, no solo un yogur común. Combinamos ciencia, nutrición y sabor premium para crear un producto que cuide tu vitalidad desde adentro. Somos una empresa joven, mexicana y comprometida con el bienestar femenino.' },
+
+            /* ─ TESTIMONIOS Y CONFIANZA ─ */
+            { keys: ['confiable','seguro','certificado','recomendable','funciona','sirve','vale la pena'],
+              resp: 'Eternal está elaborado con ingredientes de calidad comprobada y formulado con base en evidencia científica sobre los beneficios del colágeno y los probióticos en mujeres mayores de 50 años. Muchas clientas comparten sus resultados positivos en nuestro Instagram. Te invitamos a probar tu primer pedido y vivir la experiencia.' },
+
+            { keys: ['efectos secundarios','malo','daño','reaccion','reacción'],
+              resp: 'Eternal es un alimento natural y seguro para la gran mayoría de las personas. Algunos usuarios nuevos al consumo de probióticos pueden experimentar leve malestar digestivo los primeros días, que desaparece naturalmente. Si tienes alguna condición médica específica, consulta a tu médico antes de comenzar.' },
+
+            /* ─ PREGUNTAS GENERALES / FALLBACK ─ */
+            { keys: ['hola','buenos dias','buenas tardes','buenas noches','saludos','hey'],
+              resp: '¡Hola! Soy el asesor nutricional de Eternal. Estoy aquí para responder todas tus dudas sobre nuestros productos, sus beneficios, cómo consumirlos y cómo hacer tu pedido. ¿En qué puedo ayudarte hoy?' },
+
+            { keys: ['gracias','muchas gracias','thank you','excelente','perfecto','muy bien'],
+              resp: '¡Con mucho gusto! Recuerda que en Eternal estamos para acompañarte en tu camino hacia una salud plena. Si tienes más preguntas, aquí estaré. ¡Que tengas un excelente día!' },
+
+            { keys: ['que es eternal','eternal','yogur eternal','marca eternal'],
+              resp: 'Eternal es una marca mexicana de yogur funcional premium, diseñado especialmente para mujeres mayores de 50 años. Combina colágeno hidrolizado, probióticos de última generación y cero azúcar añadida. Disponible en sabores Natural, Fresa y Durazno, en presentación bebible, botella de 1 litro y edición espesa.' },
+        ];
+
+        /* ── Motor de búsqueda por palabras clave ── */
+        function buscarRespuesta(texto) {
+            const q = texto.toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '') // quitar tildes
+                .replace(/[^a-z0-9\s]/g, '');
+
+            const palabras = q.split(/\s+/).filter(p => p.length > 2);
+
+            let mejorPuntaje = 0;
+            let mejorRespuesta = null;
+
+            for (const entrada of bancoPreguntasRespuestas) {
+                let puntaje = 0;
+                for (const keyword of entrada.keys) {
+                    const kNorm = keyword.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                    if (q.includes(kNorm)) puntaje += 2;          // coincidencia exacta
+                    else if (palabras.some(p => kNorm.includes(p) || p.includes(kNorm))) puntaje += 1; // parcial
+                }
+                if (puntaje > mejorPuntaje) {
+                    mejorPuntaje = puntaje;
+                    mejorRespuesta = entrada.resp;
+                }
+            }
+
+            if (mejorPuntaje === 0) {
+                return 'Gracias por tu pregunta. Para darte la información más precisa sobre ese tema, te recomendamos escribirnos directamente por Instagram @eternalyugurt donde nuestro equipo te atenderá con gusto. ¡Estamos para ayudarte!';
+            }
+            return mejorRespuesta;
+        }
+
+        /* ── Función principal del chat ── */
+        function askAI(customPrompt = null) {
             const input     = document.getElementById('aiInput');
             const container = document.getElementById('chatMessages');
             const query     = customPrompt || input.value.trim();
@@ -328,71 +571,34 @@ No saludes de nuevo si ya lo hiciste antes.`;
 
             input.value = '';
 
-            // Guardar en historial
-            conversationHistory.push({ role: 'user', parts: [{ text: query }] });
-
-            // Mensaje del usuario en pantalla
+            // Mensaje usuario
             const userMsg = document.createElement('div');
-            userMsg.className = 'bg-gray-100 p-3 rounded-lg ml-8 text-right';
+            userMsg.className = 'bg-gray-100 p-3 rounded-lg ml-8 text-right text-sm leading-relaxed';
             userMsg.innerText = query;
             container.appendChild(userMsg);
             container.scrollTop = container.scrollHeight;
 
-            // Indicador "escribiendo..."
+            // Simular pequeño delay para naturalidad
             const loading = document.createElement('div');
             loading.className = 'italic text-gray-400 text-[11px] p-3';
-            loading.innerHTML = 'Analizando<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
+            loading.innerHTML = 'Consultando<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
             container.appendChild(loading);
             container.scrollTop = container.scrollHeight;
 
-            try {
-                const body = {
-                    system_instruction: { parts: [{ text: SYSTEM_PROMPT }] },
-                    contents: conversationHistory
-                };
-
-                const response = await fetch(GEMINI_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
-                });
-
-                if (!response.ok) {
-                    const err = await response.json();
-                    throw new Error(err.error?.message || `HTTP ${response.status}`);
-                }
-
-                const data  = await response.json();
-                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-                if (!reply) throw new Error('Respuesta vacía del servidor.');
-
-                // Guardar respuesta en historial para contexto
-                conversationHistory.push({ role: 'model', parts: [{ text: reply }] });
-
+            setTimeout(() => {
                 loading.remove();
+                const respuesta = buscarRespuesta(query);
                 const aiMsg = document.createElement('div');
-                aiMsg.className = 'bg-[#C9A84C]/10 p-3 rounded-lg mr-8 border border-[#C9A84C]/20';
-                aiMsg.innerText = reply;
+                aiMsg.className = 'bg-[#C9A84C]/10 p-3 rounded-lg mr-8 border border-[#C9A84C]/20 text-sm leading-relaxed';
+                aiMsg.innerText = respuesta;
                 container.appendChild(aiMsg);
-
-            } catch (err) {
-                loading.remove();
-                const errorMsg = document.createElement('div');
-                errorMsg.className = 'text-red-500 text-[11px] p-3 bg-red-50 rounded';
-                errorMsg.innerText = `⚠️ ${err.message || 'Error al conectar. Intenta de nuevo.'}`;
-                container.appendChild(errorMsg);
-                // Revertir el último mensaje del historial si falló
-                conversationHistory.pop();
-                console.error('Error Gemini:', err);
-            }
-
-            container.scrollTop = container.scrollHeight;
+                container.scrollTop = container.scrollHeight;
+            }, 600);
         }
 
         window.generateRecipe = (product) => {
             if (!chatVisible) toggleChat();
-            askAI(`Dame una sugerencia creativa y saludable para incorporar mi ${product} Eternal en el desayuno.`);
+            setTimeout(() => askAI(`receta desayuno ${product}`), 300);
         };
 
         /* ── Filtros catálogo ── */

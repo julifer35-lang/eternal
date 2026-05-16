@@ -1,4 +1,4 @@
-
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -20,16 +20,33 @@
         body { font-family: 'Nunito', sans-serif; background-color: var(--crema); }
         h1, h2, h3, .serif { font-family: 'Cormorant Garamond', serif; }
         
+        /* Fade-in general */
         .fade-in { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
         .fade-in.visible { opacity: 1; transform: translateY(0); }
-        
-        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
-        
+
+        /* Animación del logo en Hero */
+        @keyframes logoEntrada {
+            from { opacity: 0; transform: scale(0.85) translateY(-10px); }
+            to   { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .logo-hero { animation: logoEntrada 1s ease-out forwards; }
+
+        .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.3); }
+
         @keyframes slideUp {
             from { transform: translateY(100%); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
+            to   { transform: translateY(0); opacity: 1; }
         }
         .chat-animate { animation: slideUp 0.4s ease-out forwards; }
+
+        /* Puntos de "escribiendo..." */
+        @keyframes blink {
+            0%, 80%, 100% { opacity: 0; }
+            40% { opacity: 1; }
+        }
+        .dot { display: inline-block; animation: blink 1.4s infinite; }
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
 
         #chatMessages::-webkit-scrollbar { width: 4px; }
         #chatMessages::-webkit-scrollbar-thumb { background: #C9A84C; border-radius: 10px; }
@@ -42,32 +59,45 @@
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <img src="logo.png.png" alt="Logo Eternal" class="h-10 lg:h-12 object-contain">
             <div class="hidden md:flex space-x-8 text-sm font-semibold tracking-widest uppercase">
-                <a href="#inicio" class="hover:text-[#C9A84C] transition">Inicio</a>
-                <a href="#nosotros" class="hover:text-[#C9A84C] transition">Nosotros</a>
+                <a href="#inicio"    class="hover:text-[#C9A84C] transition">Inicio</a>
+                <a href="#nosotros"  class="hover:text-[#C9A84C] transition">Nosotros</a>
                 <a href="#beneficios" class="hover:text-[#C9A84C] transition">Beneficios</a>
-                <a href="#catalogo" class="hover:text-[#C9A84C] transition">Catálogo</a>
-                <a href="#contacto" class="hover:text-[#C9A84C] transition">Contacto</a>
+                <a href="#catalogo"  class="hover:text-[#C9A84C] transition">Catálogo</a>
+                <a href="#contacto"  class="hover:text-[#C9A84C] transition">Contacto</a>
             </div>
             <button class="md:hidden text-2xl" id="menuBtn"><i class="fas fa-bars"></i></button>
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section id="inicio" class="h-screen flex items-center justify-center bg-white relative overflow-hidden">
+    <!-- ─── HERO ─── -->
+    <section id="inicio" class="min-h-screen flex flex-col items-center justify-center bg-white relative overflow-hidden pt-24">
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#C9A84C_1px,transparent_1px)] [background-size:20px_20px]"></div>
-        <div class="container mx-auto px-6 text-center z-10 fade-in">
-            <h1 class="text-5xl md:text-7xl mb-6 text-[#1A1A1A]">Bienvenido a la <span class="italic text-[#C9A84C]">madurez plena</span>.</h1>
-            <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
-                Yogur funcional premium diseñado científicamente para fortalecer tu vitalidad a partir de los 50 años.
-            </p>
-            <div class="flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#catalogo" class="bg-[#C9A84C] text-white px-10 py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#1A1A1A] transition duration-500">Explorar Catálogo</a>
-                <a href="https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr" target="_blank" class="border border-[#1A1A1A] px-10 py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#1A1A1A] hover:text-white transition duration-500">Ver Instagram</a>
+
+        <div class="container mx-auto px-6 text-center z-10 flex flex-col items-center">
+
+            <!-- LOGO GRANDE -->
+            <div class="logo-hero mb-10">
+                <img src="logo.png.png"
+                     alt="Logo Eternal"
+                     class="w-56 md:w-80 lg:w-96 mx-auto object-contain drop-shadow-lg">
+            </div>
+
+            <!-- Texto -->
+            <div class="fade-in">
+                <h1 class="text-5xl md:text-7xl mb-6 text-[#1A1A1A]">Bienvenido a la <span class="italic text-[#C9A84C]">madurez plena</span>.</h1>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
+                    Yogur funcional premium diseñado científicamente para fortalecer tu vitalidad a partir de los 50 años.
+                </p>
+                <div class="flex flex-col md:flex-row gap-4 justify-center">
+                    <a href="#catalogo" class="bg-[#C9A84C] text-white px-10 py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#1A1A1A] transition duration-500">Explorar Catálogo</a>
+                    <a href="https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr" target="_blank"
+                       class="border border-[#1A1A1A] px-10 py-4 uppercase tracking-widest text-xs font-bold hover:bg-[#1A1A1A] hover:text-white transition duration-500">Ver Instagram</a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Nosotros -->
+    <!-- ─── NOSOTROS ─── -->
     <section id="nosotros" class="py-24 bg-[#FAF6F0]">
         <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-16 items-center">
             <div class="fade-in">
@@ -90,18 +120,45 @@
                 <div class="relative p-8">
                     <div class="absolute inset-0 bg-[#C9A84C] rotate-3 opacity-10"></div>
                     <div class="relative bg-white shadow-xl overflow-hidden aspect-square flex items-center justify-center">
-                         <img src="logo.png.png" alt="Logo" class="w-64 opacity-20 absolute">
-                         <div class="text-center p-12">
-                             <i class="fas fa-certificate text-5xl text-[#C9A84C] mb-4"></i>
-                             <p class="serif text-2xl italic">"La ciencia de envejecer con vitalidad."</p>
-                         </div>
+                        <img src="logo.png.png" alt="Logo" class="w-64 opacity-20 absolute">
+                        <div class="text-center p-12">
+                            <i class="fas fa-certificate text-5xl text-[#C9A84C] mb-4"></i>
+                            <p class="serif text-2xl italic">"La ciencia de envejecer con vitalidad."</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Catálogo -->
+    <!-- ─── BENEFICIOS (sección nueva) ─── -->
+    <section id="beneficios" class="py-24 bg-white">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16 fade-in">
+                <h2 class="text-5xl mb-4">Por qué elegir <span class="text-[#C9A84C]">Eternal</span></h2>
+                <p class="text-gray-500 max-w-xl mx-auto">Cada ingrediente tiene un propósito. Cada cucharada, un beneficio.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="fade-in bg-[#FAF6F0] p-8 text-center border-t-2 border-[#C9A84C]">
+                    <i class="fas fa-dna text-4xl text-[#C9A84C] mb-4"></i>
+                    <h3 class="text-2xl mb-3">Colágeno Activo</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Formulado con péptidos de colágeno que apoyan la elasticidad de la piel y la salud articular a partir de los 50 años.</p>
+                </div>
+                <div class="fade-in bg-[#FAF6F0] p-8 text-center border-t-2 border-[#C9A84C]">
+                    <i class="fas fa-bacterium text-4xl text-[#C9A84C] mb-4"></i>
+                    <h3 class="text-2xl mb-3">Probióticos Premium</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Cepas probióticas seleccionadas científicamente para fortalecer el microbioma intestinal y mejorar la digestión.</p>
+                </div>
+                <div class="fade-in bg-[#FAF6F0] p-8 text-center border-t-2 border-[#C9A84C]">
+                    <i class="fas fa-shield-heart text-4xl text-[#C9A84C] mb-4"></i>
+                    <h3 class="text-2xl mb-3">Sin Azúcar Añadida</h3>
+                    <p class="text-gray-600 leading-relaxed text-sm">Cero azúcares añadidos. Ideal para personas con diabetes, hipertensión o que simplemente cuidan su alimentación.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ─── CATÁLOGO ─── -->
     <section id="catalogo" class="py-24 bg-[#FAF6F0]">
         <div class="max-w-7xl mx-auto px-6">
             <div class="text-center mb-16 fade-in">
@@ -113,20 +170,18 @@
                     <button class="filter-btn text-gray-400 hover:text-[#C9A84C] px-4 py-2 text-xs uppercase font-bold tracking-widest transition" data-filter="durazno">Durazno</button>
                 </div>
             </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid">
-                <!-- Se inyecta por JS -->
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" id="productGrid"></div>
         </div>
     </section>
 
-    <!-- Contacto -->
+    <!-- ─── CONTACTO ─── -->
     <section id="contacto" class="py-24 bg-white">
         <div class="max-w-4xl mx-auto px-6 text-center">
             <h2 class="text-4xl mb-8">¿Deseas realizar un pedido?</h2>
             <p class="text-gray-500 mb-12">Atención personalizada y pedidos directos a través de nuestro Instagram oficial.</p>
             <div class="flex justify-center">
-                <a href="https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr" target="_blank" class="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white px-12 py-5 rounded-full flex items-center justify-center space-x-3 text-sm font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition">
+                <a href="https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr" target="_blank"
+                   class="bg-gradient-to-tr from-[#f9ce34] via-[#ee2a7b] to-[#6228d7] text-white px-12 py-5 rounded-full flex items-center justify-center space-x-3 text-sm font-bold uppercase tracking-widest shadow-xl hover:scale-105 transition">
                     <i class="fab fa-instagram text-xl"></i>
                     <span>Contactar en Instagram</span>
                 </a>
@@ -134,7 +189,7 @@
         </div>
     </section>
 
-    <!-- Footer -->
+    <!-- ─── FOOTER ─── -->
     <footer class="bg-[#1A1A1A] text-white py-16">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <img src="logo.png.png" alt="Logo" class="h-10 mx-auto mb-8 brightness-0 invert opacity-50">
@@ -142,7 +197,7 @@
         </div>
     </footer>
 
-    <!-- IA Nutri-Asesor -->
+    <!-- ─── CHAT IA (Claude) ─── -->
     <div id="aiChatContainer" class="fixed bottom-24 right-8 w-80 md:w-96 hidden z-50 chat-animate">
         <div class="glass rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
             <div class="bg-[#1A1A1A] p-4 text-white flex justify-between items-center">
@@ -158,7 +213,9 @@
                 </div>
             </div>
             <div class="p-3 bg-white flex space-x-2 border-t">
-                <input type="text" id="aiInput" placeholder="Escribe tu duda aquí..." class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-xs focus:outline-none">
+                <input type="text" id="aiInput" placeholder="Escribe tu duda aquí..."
+                       class="flex-1 bg-gray-100 rounded-full px-4 py-2 text-xs focus:outline-none"
+                       onkeydown="if(event.key==='Enter') askAI()">
                 <button onclick="askAI()" class="bg-[#1A1A1A] text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-[#C9A84C] transition">
                     <i class="fas fa-paper-plane text-xs"></i>
                 </button>
@@ -167,39 +224,38 @@
     </div>
 
     <!-- Botón Flotante IA -->
-    <button onclick="toggleChat()" class="fixed bottom-8 left-8 bg-[#1A1A1A] text-white px-6 py-3 rounded-full shadow-xl flex items-center space-x-3 hover:bg-[#C9A84C] transition z-40">
+    <button onclick="toggleChat()"
+            class="fixed bottom-8 left-8 bg-[#1A1A1A] text-white px-6 py-3 rounded-full shadow-xl flex items-center space-x-3 hover:bg-[#C9A84C] transition z-40">
         <i class="fas fa-robot"></i>
         <span class="text-xs font-bold uppercase tracking-widest">Asesor Nutricional</span>
     </button>
 
+    <!-- ─── SCRIPTS ─── -->
     <script>
         const IG_URL = "https://www.instagram.com/eternalyugurt?igsh=MXRkMmp4ejFjZmZxNg%3D%3D&utm_source=qr";
 
-        // API KEY Integrada correctamente
-        const apiKey = "AIzaSyCuChdS3bBwvRt4r7lVcJyWNPWJD-9CK5A"; 
-
+        /* ── Productos ── */
         const productos = [
-            { id: 1, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Botella 1 Litro', img: 'natural-1lt.jpg.png', basePrice: 85, options: ['Individual 1 Lt', 'Paquete 2x1 Lt'], prices: [85, 155] },
-            { id: 2, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Bebible 250ml', img: 'natural-250ml.jpg.jpg', basePrice: 28 },
-            { id: 3, sabor: 'natural', nombre: 'Yogur Natural', tipo: 'Edición Espesa 1 Litro', img: 'natural-espesa-1lt.jpg.jpg', basePrice: 95 },
-            { id: 4, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Botella 1 Litro', img: 'fresa-1lt.jpg.png', basePrice: 89, options: ['Individual 1 Lt', 'Paquete 2x1 Lt'], prices: [89, 160] },
-            { id: 5, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Bebible 250ml', img: 'fresa-250ml.jpg.jpg', basePrice: 30 },
-            { id: 6, sabor: 'fresa', nombre: 'Yogur Fresa', tipo: 'Edición Espesa 1 Litro', img: 'fresa-espesa-1lt.jpg.jpg', basePrice: 99 },
-            { id: 7, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Botella 1 Litro', img: 'durazno-1lt.jpg.png', basePrice: 89 },
-            { id: 8, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Bebible 250ml', img: 'durazno-250ml.jpg.png', basePrice: 30 },
-            { id: 9, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Edición Espesa 1 Litro', img: 'durazno-espesa-1lt.jpg.jpg', basePrice: 99 },
-            { id: 10, sabor: 'durazno', nombre: 'Yogur Durazno', tipo: 'Espesa Individual 150g', img: 'durazno-espesa-150g.jpg.jpg', basePrice: 34 }
+            { id:1,  sabor:'natural',  nombre:'Yogur Natural',  tipo:'Botella 1 Litro',          img:'natural-1lt.jpg.png',         basePrice:85,  options:['Individual 1 Lt','Paquete 2x1 Lt'], prices:[85,155] },
+            { id:2,  sabor:'natural',  nombre:'Yogur Natural',  tipo:'Bebible 250ml',             img:'natural-250ml.jpg.jpg',        basePrice:28 },
+            { id:3,  sabor:'natural',  nombre:'Yogur Natural',  tipo:'Edición Espesa 1 Litro',    img:'natural-espesa-1lt.jpg.jpg',   basePrice:95 },
+            { id:4,  sabor:'fresa',    nombre:'Yogur Fresa',    tipo:'Botella 1 Litro',           img:'fresa-1lt.jpg.png',            basePrice:89,  options:['Individual 1 Lt','Paquete 2x1 Lt'], prices:[89,160] },
+            { id:5,  sabor:'fresa',    nombre:'Yogur Fresa',    tipo:'Bebible 250ml',             img:'fresa-250ml.jpg.jpg',          basePrice:30 },
+            { id:6,  sabor:'fresa',    nombre:'Yogur Fresa',    tipo:'Edición Espesa 1 Litro',    img:'fresa-espesa-1lt.jpg.jpg',     basePrice:99 },
+            { id:7,  sabor:'durazno',  nombre:'Yogur Durazno',  tipo:'Botella 1 Litro',           img:'durazno-1lt.jpg.png',          basePrice:89 },
+            { id:8,  sabor:'durazno',  nombre:'Yogur Durazno',  tipo:'Bebible 250ml',             img:'durazno-250ml.jpg.png',        basePrice:30 },
+            { id:9,  sabor:'durazno',  nombre:'Yogur Durazno',  tipo:'Edición Espesa 1 Litro',    img:'durazno-espesa-1lt.jpg.jpg',   basePrice:99 },
+            { id:10, sabor:'durazno',  nombre:'Yogur Durazno',  tipo:'Espesa Individual 150g',    img:'durazno-espesa-150g.jpg.jpg',  basePrice:34 }
         ];
 
         function renderProducts(filter = 'all') {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             const filtered = filter === 'all' ? productos : productos.filter(p => p.sabor === filter);
-            
             filtered.forEach(p => {
                 const card = document.createElement('div');
                 card.className = 'group bg-white p-6 border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center relative flex flex-col justify-between h-full';
-                
+
                 let optionsHtml = '';
                 if (p.options) {
                     optionsHtml = `<div class="flex justify-center gap-2 mb-4">`;
@@ -221,11 +277,13 @@
                         ${optionsHtml}
                     </div>
                     <div class="grid grid-cols-2 gap-2 mt-4">
-                        <a href="${IG_URL}" target="_blank" class="bg-[#1A1A1A] text-white py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#C9A84C] transition flex items-center justify-center">
-                           <i class="fab fa-instagram mr-2"></i> Pedir
+                        <a href="${IG_URL}" target="_blank"
+                           class="bg-[#1A1A1A] text-white py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#C9A84C] transition flex items-center justify-center">
+                            <i class="fab fa-instagram mr-2"></i> Pedir
                         </a>
-                        <button onclick="generateRecipe('${p.nombre}')" class="border border-[#1A1A1A] text-[#1A1A1A] py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#1A1A1A] hover:text-white transition">
-                           <i class="fas fa-utensils mr-2"></i> Receta
+                        <button onclick="generateRecipe('${p.nombre}')"
+                                class="border border-[#1A1A1A] text-[#1A1A1A] py-3 text-[9px] uppercase font-bold tracking-widest hover:bg-[#1A1A1A] hover:text-white transition">
+                            <i class="fas fa-utensils mr-2"></i> Receta
                         </button>
                     </div>
                 `;
@@ -243,77 +301,104 @@
             btn.classList.add('border-[#C9A84C]', 'text-[#C9A84C]');
         };
 
+        /* ── Chat toggle ── */
         let chatVisible = false;
         function toggleChat() {
             chatVisible = !chatVisible;
             document.getElementById('aiChatContainer').classList.toggle('hidden', !chatVisible);
         }
 
+        /* ── IA con Anthropic Claude API ── */
         async function askAI(customPrompt = null) {
-            const input = document.getElementById('aiInput');
+            const input     = document.getElementById('aiInput');
             const container = document.getElementById('chatMessages');
-            const query = customPrompt || input.value;
+            const query     = customPrompt || input.value.trim();
             if (!query) return;
 
             input.value = '';
+
+            // Mensaje del usuario
             const userMsg = document.createElement('div');
             userMsg.className = 'bg-gray-100 p-3 rounded-lg ml-8 text-right';
             userMsg.innerText = query;
             container.appendChild(userMsg);
             container.scrollTop = container.scrollHeight;
 
+            // Indicador "escribiendo..."
             const loading = document.createElement('div');
-            loading.className = 'italic text-gray-400 text-[10px]';
-            loading.innerText = 'Analizando nutrición...';
+            loading.className = 'italic text-gray-400 text-[11px] p-3';
+            loading.innerHTML = 'Analizando<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span>';
             container.appendChild(loading);
+            container.scrollTop = container.scrollHeight;
 
             try {
-                // Llamada a la API de Gemini
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true'
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Eres el experto nutricional de la marca de yogur premium Eternal. Tu especialidad es la salud de personas mayores de 50 años. Responde de forma amable, profesional y breve en español. Pregunta: ${query}` }] }]
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 400,
+                        system: 'Eres el experto nutricional de la marca de yogur premium Eternal, especializado en la salud de personas mayores de 50 años. Responde de forma amable, profesional y concisa en español. Si te preguntan sobre recetas, sugiere formas saludables y creativas de incorporar el yogur Eternal en la dieta. Tus respuestas no deben exceder 3 párrafos cortos.',
+                        messages: [{ role: 'user', content: query }]
                     })
                 });
 
                 const data = await response.json();
-                const reply = data.candidates[0].content.parts[0].text;
-                
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || 'Error de API');
+                }
+
+                const reply = data.content[0].text;
+
                 loading.remove();
                 const aiMsg = document.createElement('div');
                 aiMsg.className = 'bg-[#C9A84C]/10 p-3 rounded-lg mr-8 border border-[#C9A84C]/20';
                 aiMsg.innerText = reply;
                 container.appendChild(aiMsg);
+
             } catch (err) {
                 loading.remove();
                 const errorMsg = document.createElement('div');
-                errorMsg.className = 'text-red-500 text-[10px] p-2 bg-red-50';
-                errorMsg.innerText = "Error al conectar con el asesor. Por favor intenta más tarde.";
+                errorMsg.className = 'text-red-500 text-[11px] p-2 bg-red-50 rounded';
+                errorMsg.innerText = '⚠️ Error al conectar con el asesor. Verifica tu conexión e intenta de nuevo.';
                 container.appendChild(errorMsg);
+                console.error('Error IA:', err);
             }
+
             container.scrollTop = container.scrollHeight;
         }
 
         window.generateRecipe = (product) => {
             if (!chatVisible) toggleChat();
-            askAI(`Sugiere una forma saludable de comer mi ${product} Eternal en el desayuno.`);
+            askAI(`Dame una sugerencia creativa y saludable para incorporar mi ${product} Eternal en el desayuno.`);
         };
 
+        /* ── Filtros catálogo ── */
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'border-b-2', 'border-[#C9A84C]', 'text-black'));
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active', 'border-b-2', 'border-[#C9A84C]', 'text-black');
+                    b.classList.add('text-gray-400');
+                });
                 btn.classList.add('active', 'border-b-2', 'border-[#C9A84C]', 'text-black');
+                btn.classList.remove('text-gray-400');
                 renderProducts(btn.dataset.filter);
             });
         });
 
+        /* ── Navbar scroll ── */
         window.addEventListener('scroll', () => {
             const nav = document.getElementById('navbar');
             if (window.scrollY > 50) nav.classList.add('bg-white/90', 'shadow-sm', 'py-4');
             else nav.classList.remove('bg-white/90', 'shadow-sm', 'py-4');
         });
 
+        /* ── Fade-in observer ── */
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
         }, { threshold: 0.1 });
